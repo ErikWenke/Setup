@@ -59,7 +59,7 @@ sudo pacman -Syu
 
 for i in ${pac_pac[@]}
 do
-  sudo pacman --needed -S
+  sudo pacman --noconfirm --needed -S $i
 done
 
 if [ ! -d "$HOME/yay" ]; then
@@ -79,13 +79,11 @@ aur_pac=(
 
 for i in ${aur_pac[@]}
 do
-  yay --needed -S
+  yay --needed -S $i
 done
 ############################## Services ##############################
 
 # Network Management
-sudo systemctl stop iwd
-sudo systemctl disable iwd
 sudo systemctl enable NetworkManager
 sudo systemctl start NetworkManager
 nmtui
