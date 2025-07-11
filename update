@@ -38,6 +38,7 @@ pac_pac=(
   mpv # media player
   kitty # terminal emulator
   obsidian # note taking software
+  linux-firmware
   lilypond fluidsynth soundfont-fluid ffmpeg
   dunst # notification daemon
   bash # shell
@@ -82,26 +83,17 @@ do
 done
 ############################## Services ##############################
 
-service_off=(
-  iwd.service
-)
+# Network Management
+sudo systemctl stop iwd
+sudo systemctl disable iwd
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
+nmtui
 
-service_on=(
-  bluetooth
-  NetworkManager.service
-)
+# Bluetooth
+sudo systemctl enable bluetooth
+sudo systemctl start bluetooth
 
-for i in ${service_off[@]}
-do
-  sudo systemctl stop $i
-  sudo systemctl disable $i
-done
-
-for i in ${service_on[@]}
-do
-  sudo systemctl enable $i
-  sudo systemctl start $i
-done
 ############################# Files ##############################
 
 rclone config
