@@ -54,12 +54,6 @@ pac_pac=(
     zathura-pdf-mupdf # -> PDF
 )
 
-aur_pac=(
-  anki
-  hyprshot
-  dtrx
-)
-
 sudo pacman -Syu
 
 for i in ${pac_pac[@]}
@@ -76,25 +70,16 @@ if [ ! -d "$HOME/yay" ]; then
     cd || exit
 fi
 
+aur_pac=(
+  anki
+  hyprshot
+  dtrx
+)
+
 for i in ${aur_pac[@]}
 do
   yay --needed -S
 done
-
-############################# Files ##############################
-
-rclone config
-if [[ "~/brain" ]]
-then
-  rclone sync ~/brain remote:brain
-else
-  mkdir "~/brain"
-  rclone copy remote:brain ~/brain
-fi
-
-# setup
-stow -t $HOME -d $(fd -a -t dir --search-path ~ dotfiles) .
-
 ############################## Services ##############################
 
 service_off=(
@@ -117,6 +102,19 @@ do
   sudo systemctl enable $i
   sudo systemctl start $i
 done
+############################# Files ##############################
+
+rclone config
+if [[ "~/brain" ]]
+then
+  rclone sync ~/brain remote:brain
+else
+  mkdir "~/brain"
+  rclone copy remote:brain ~/brain
+fi
+
+# setup
+stow -t $HOME -d $(fd -a -t dir --search-path ~ dotfiles) .
 
 ############################## Executable ##############################
 
