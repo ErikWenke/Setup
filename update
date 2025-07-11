@@ -1,0 +1,123 @@
+#!/bin/bash
+
+############################## Packages ##############################
+
+pac_pac=(
+  ### Display
+  # INFO: protocol: wayland
+  hyprland # server
+  brightnessctl # brightness control
+  ttf-firacode-nerd # font
+
+  ### File Management
+  git # version control system
+  unzip # Compression
+  7zip # Decompression
+  dolphin # GUI file manager
+  rclone # backup
+  stow # symbolic link manager
+
+  ### Text Manipulation
+  nvim # editor
+    # -> Telescope
+    ripgrep
+    fd
+  tree-sitter-cli
+
+  ### Package Management
+  luarocks
+  npm
+  yarn
+  python-pip
+
+  ### Others
+  networkmanager
+  nodejs
+  base-devel # -> yay
+  python
+  mpv # media player
+  kitty # terminal emulator
+  obsidian # note taking software
+  lilypond fluidsynth soundfont-fluid ffmpeg
+  dunst # notification daemon
+  bash # shell
+  cmus # music player
+  firefox # web-browser
+  hyprpolkitagent # graphical authentication agent (polkit)
+  bluez
+  bluez-utils
+  wl-clipboard # clipboard manipulation
+  wofi # application launcher
+  pdftk # pdf manipulation
+  fastfetch # display system info
+  zathura # document viewer
+    zathura-pdf-mupdf # -> PDF
+)
+
+aur_pac=(
+  anki
+  hyprshot
+  dtrx
+)
+
+sudo pacman -Syu
+
+for i in ${pac_pac[@]}
+do
+  sudo pacman --needed -S
+done
+
+if [ ! -d "$HOME/yay" ]; then
+    cd || exit
+    sudo pacman -S --needed git base-devel
+    git clone https://aur.archlinux.org/yay.git
+    cd yay || exit
+    makepkg -si
+    cd || exit
+fi
+
+for i in ${aur_pac[@]}
+do
+  yay --needed -S
+done
+
+############################# Files ##############################
+
+rclone config
+if [[ "~/brain" ]]
+then
+  rclone sync ~/brain remote:brain
+else
+  mkdir "~/brain"
+  rclone copy remote:brain ~/brain
+fi
+
+# setup
+stow -t $HOME -d $(fd -a -t dir --search-path ~ dotfiles) .
+
+############################## Services ##############################
+
+service_off=(
+  iwd.service
+)
+
+service_on=(
+  bluetooth
+  NetworkManager.service
+)
+
+for i in ${service_off[@]}
+do
+  sudo systemctl stop $i
+  sudo systemctl disable $i
+done
+
+for i in ${service_on[@]}
+do
+  sudo systemctl enable $i
+  sudo systemctl start $i
+done
+
+############################## Executable ##############################
+
+chmod +x "$(fd -a -t dir --search-path ~ scripts)*"
