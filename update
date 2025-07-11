@@ -81,12 +81,8 @@ for i in ${aur_pac[@]}
 do
   yay --needed -S $i --noconfirm
 done
-############################## Services ##############################
 
-# Network Management
-sudo systemctl enable NetworkManager
-sudo systemctl start NetworkManager
-nmtui
+############################## Services ##############################
 
 # Bluetooth
 sudo systemctl enable bluetooth
