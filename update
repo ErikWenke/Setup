@@ -79,7 +79,7 @@ aur_pac=(
 
 for i in ${aur_pac[@]}
 do
-  yay --needed -S $i
+  yay --needed -S $i --noconfirm
 done
 ############################## Services ##############################
 
